@@ -1,0 +1,28 @@
+name: Convert Iconsets to ICNS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-icons:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Create output directory
+        run: mkdir -p output
+
+      - name: Convert .iconset to .icns
+        run: |
+          for dir in *.iconset; do
+            name=$(basename "$dir" .iconset)
+            iconutil -c icns "$dir" -o "output/${name}.icns"
+          done
+
+      - name: Upload ICNS files
+        uses: actions/upload-artifact@v4
+        with:
+          name: icns-icons
+          path: output/
